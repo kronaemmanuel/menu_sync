@@ -1,8 +1,9 @@
 import type { User } from "@clerk/nextjs/dist/api";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
 const filterUserForClient = (user: User) => {
   return { 
@@ -17,6 +18,7 @@ export const restaurantsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const restaurants = await ctx.prisma.restaurant.findMany({
       take: 10,
+      orderBy: [{createdAt: "desc"}]
     });
 
     const users = (
@@ -37,4 +39,22 @@ export const restaurantsRouter = createTRPCRouter({
       };
     })
   }),
+
+  create: privateProcedure.input(z.object({
+    title: z.string().min(1).max(200),
+    description: z.string().min(1).max(500),
+  })).mutation(async ({ctx, input}) => {
+    const userId = ctx.userId;
+    const {title, description} = input
+
+    const restaurant = await ctx.prisma.restaurant.create({
+      data: {
+        userId,
+        title,
+        description
+      }
+    })
+
+    return restaurant
+  })
 });

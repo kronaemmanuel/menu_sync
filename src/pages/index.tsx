@@ -9,21 +9,52 @@ dayjs.extend(relativeTime)
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
 import { LoadingPage } from "~/components/loading";
+import { useState } from "react";
 
 const CreateRestaurantWizard = () => {
   const {user} = useUser();
 
-  if (!user) return <div>User not found!</div>;
+  const ctx = api.useContext()
 
-  console.log(user)
+  const { mutate, isLoading: isCreating } = api.restaurants.create.useMutation({
+    onSuccess: () => {
+      setTitle("")
+      setDescription("")
+      void ctx.restaurants.getAll.invalidate();
+    }
+  });
+  
+  const [ title, setTitle ] = useState("")
+  const [ description, setDescription ] = useState("")
+
+  if (!user) return <div>User not found!</div>;
 
   return (
     <div className="mt-4">
       <h3>Add New Restaurant:</h3>
       <div className="flex space-x-4">
-        <label>Name:</label>
-        <input placeholder="Enter Name" className="text-gray-800"/>
+        <label>Title:</label>
+        <input
+          placeholder="Enter Name"
+          className="text-gray-800"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={isCreating}
+        />
       </div>
+      <div className="flex space-x-4">
+        <label>Description:</label>
+        <input
+          placeholder="Enter Description"
+          className="text-gray-800"
+          type="text"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          disabled={isCreating}
+        />
+      </div>
+      <button className="bg-white text-gray-800 p-2 rounded-md" onClick={() => mutate({title, description})}>Submit</button>
     </div>
   );
 }
