@@ -2,8 +2,12 @@ import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 
+import { api } from "~/utils/api";
+
 const Home: NextPage = () => {
   const user = useUser()
+
+  const { data } = api.restaurants.getAll.useQuery();
 
   return (
     <>
@@ -16,6 +20,11 @@ const Home: NextPage = () => {
         <div>
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
+        </div>
+        <div>
+          {data?.map((restaurant) => (
+            <div key={restaurant.id}>{restaurant.title}</div>
+          ))}
         </div>
       </main>
     </>
