@@ -8,8 +8,9 @@ dayjs.extend(relativeTime)
 
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
-import { LoadingPage } from "~/components/loading";
+import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const CreateRestaurantWizard = () => {
   const {user} = useUser();
@@ -21,6 +22,19 @@ const CreateRestaurantWizard = () => {
       setTitle("")
       setDescription("")
       void ctx.restaurants.getAll.invalidate();
+    },
+    onError: (e) => {
+      const errorMessages = e.data?.zodError?.fieldErrors
+      if (errorMessages) {
+        if (errorMessages.title && errorMessages.title[0]) {
+          toast.error(`Title: ${errorMessages.title[0]}`);
+        }
+        if (errorMessages.description && errorMessages.description[0]) {
+          toast.error(`Description: ${errorMessages.description[0]}`);
+        }
+      } else {
+        toast.error("Failed to create")
+      }
     }
   });
   
@@ -54,7 +68,17 @@ const CreateRestaurantWizard = () => {
           disabled={isCreating}
         />
       </div>
-      <button className="bg-white text-gray-800 p-2 rounded-md" onClick={() => mutate({title, description})}>Submit</button>
+      <div className="p-2">
+        {title !== "" && description !== "" && !isCreating && (
+          <button
+            className="rounded-md bg-white text-gray-800"
+            onClick={() => mutate({ title, description })}
+          >
+            Submit
+          </button>
+        )}
+        {isCreating && <LoadingSpinner size={20} />}
+      </div>
     </div>
   );
 }
