@@ -11,6 +11,7 @@ import type { RouterOutputs } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const CreateRestaurantWizard = () => {
   const {user} = useUser();
@@ -89,7 +90,9 @@ const RestaurantView = (props: RestaurantWithUser ) => {
   const {restaurant, user} = props
   return (
     <div className="py-2" key={restaurant.id}>
-      <h2 className="text-xl font-semibold">{restaurant.title}</h2>
+      <Link href={`/restaurant/${restaurant.id}`}>
+        <h2 className="text-xl font-semibold">{restaurant.title}</h2>
+      </Link>
       <p>{restaurant.description}</p>
       <div className="flex gap-2">
         <span>
