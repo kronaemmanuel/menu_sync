@@ -21,5 +21,13 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  // Ignore TS and Eslint errors for faster Vercel builds. Use Github CI for it instead
+  typescript: {
+    ignoreBuildErrors: true,   
+  },
+  eslint: {
+    ignoreDuringBuilds: true
+  },
+  swcMinify: true
 };
 export default config;
