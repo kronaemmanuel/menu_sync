@@ -1,153 +1,213 @@
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
-import { type NextPage } from "next";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime"
+import { useEffect, useState } from 'react'
+import { Dialog } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import { AnimatePresence, motion } from 'framer-motion'
 
-dayjs.extend(relativeTime)
+const navigation = [
+  { name: 'Product', href: '#' },
+  { name: 'Features', href: '#' },
+  { name: 'Marketplace', href: '#' },
+  { name: 'Company', href: '#' },
+]
 
-import { api } from "~/utils/api";
-import type { RouterOutputs } from "~/utils/api";
-import { LoadingPage, LoadingSpinner } from "~/components/loading";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import Link from "next/link";
-import { PageLayout } from "~/components/pageLayout";
+export default function Example() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-const CreateRestaurantWizard = () => {
-  const {user} = useUser();
+  return (
+    <div className="bg-white">
+      <header className="absolute inset-x-0 top-0 z-50">
+        <nav
+          className="flex items-center justify-between p-6 lg:px-8"
+          aria-label="Global"
+        >
+          <div className="flex lg:flex-1">
+            <a href="#" className="-m-1.5 p-1.5">
+              <span className="sr-only">MenuSync</span>
+              <Image
+                src="/logo.svg"
+                width={100}
+                height={100}
+                alt="MenuSync logo"
+              />
+            </a>
+          </div>
+          <div className="flex lg:hidden">
+            <button
+              type="button"
+              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <span className="sr-only">Open main menu</span>
+              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="hidden lg:flex lg:gap-x-12">
+            {navigation.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                {item.name}
+              </a>
+            ))}
+          </div>
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            <a
+              href="#"
+              className="text-sm font-semibold leading-6 text-gray-900"
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </nav>
+        <Dialog
+          as="div"
+          className="lg:hidden"
+          open={mobileMenuOpen}
+          onClose={setMobileMenuOpen}
+        >
+          <div className="fixed inset-0 z-50" />
+          <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+            <div className="flex items-center justify-between">
+              <a href="#" className="-m-1.5 p-1.5">
+                <span className="sr-only">MenuSync</span>
+                <Image
+                  src="/logo.svg"
+                  width={100}
+                  height={100}
+                  alt="MenuSync logo"
+                />
+              </a>
+              <button
+                type="button"
+                className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="sr-only">Close menu</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <div className="mt-6 flow-root">
+              <div className="-my-6 divide-y divide-gray-500/10">
+                <div className="space-y-2 py-6">
+                  {navigation.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+                <div className="py-6">
+                  <a
+                    href="#"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  >
+                    Log in
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Dialog.Panel>
+        </Dialog>
+      </header>
 
-  const ctx = api.useContext()
+      <div className="relative isolate px-6 pt-14 lg:px-8">
+        <div
+          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+          />
+        </div>
+        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div className="hidden sm:mb-8 sm:flex sm:justify-center">
+            <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+              Announcing our next round of funding.{" "}
+              <a href="#" className="font-semibold text-indigo-600">
+                <span className="absolute inset-0" aria-hidden="true" />
+                Read more <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </div>
+          <div className="text-center">
+            <AnimatedHeading />
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              Say goodbye to the traditional order-taking process and step into
+              the future with MenuSync.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href="#"
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Get started
+              </a>
+              <a
+                href="#"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Learn more <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  const { mutate, isLoading: isCreating } = api.restaurants.create.useMutation({
-    onSuccess: () => {
-      setTitle("")
-      setDescription("")
-      void ctx.restaurants.getAll.invalidate();
-    },
-    onError: (e) => {
-      const errorMessages = e.data?.zodError?.fieldErrors
-      if (errorMessages) {
-        if (errorMessages.title && errorMessages.title[0]) {
-          toast.error(`Title: ${errorMessages.title[0]}`);
-        }
-        if (errorMessages.description && errorMessages.description[0]) {
-          toast.error(`Description: ${errorMessages.description[0]}`);
-        }
-      } else {
-        toast.error("Failed to create")
-      }
-    }
-  });
+const AnimatedHeading = () => {
+  const words = ["Sales", "Experience", "Revenue", "Efficiency"]
+  const [index, setIndex] = useState(0);
   
-  const [ title, setTitle ] = useState("")
-  const [ description, setDescription ] = useState("")
-
-  if (!user) return <div>User not found!</div>;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((index) => (index + 1) % words.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [words.length]);
 
   return (
-    <div className="mt-4">
-      <h3>Add New Restaurant:</h3>
-      <div className="flex space-x-4">
-        <label>Title:</label>
-        <input
-          placeholder="Enter Name"
-          className="text-gray-800"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          disabled={isCreating}
-        />
-      </div>
-      <div className="flex space-x-4">
-        <label>Description:</label>
-        <input
-          placeholder="Enter Description"
-          className="text-gray-800"
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          disabled={isCreating}
-        />
-      </div>
-      <div className="p-2">
-        {title !== "" && description !== "" && !isCreating && (
-          <button
-            className="rounded-md bg-white text-gray-800"
-            onClick={() => mutate({ title, description })}
+    <>
+      <h1 className="text-4xl tracking-tight text-gray-900 sm:text-6xl">
+        Boost your restaurant&apos;s
+      </h1>
+      <div className="relative h-16">
+        <AnimatePresence>
+          <motion.span
+            className="absolute inset-0 w-full text-4xl font-bold tracking-tight text-indigo-600 sm:text-6xl"
+            key={words[index]}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            Submit
-          </button>
-        )}
-        {isCreating && <LoadingSpinner size={20} />}
+            {words[index]}
+          </motion.span>
+        </AnimatePresence>
       </div>
-    </div>
+    </>
   );
 }
-
-type RestaurantWithUser = RouterOutputs["restaurants"]["getAll"][number]
-
-const RestaurantView = (props: RestaurantWithUser ) => {
-  const {restaurant, user} = props
-  return (
-    <div className="py-2" key={restaurant.id}>
-      <Link href={`/restaurant/${restaurant.id}`}>
-        <h2 className="text-xl font-semibold">{restaurant.title}</h2>
-      </Link>
-      <p>{restaurant.description}</p>
-      <div className="flex gap-2">
-        <Link href={`/profile/${user.id}`}>
-          <span>
-            {user.firstName} {user.lastName}
-          </span>
-        </Link>
-        <span>·</span>
-        <span>{dayjs(restaurant.createdAt).fromNow()}</span>
-      </div>
-    </div>
-  );
-};
-
-const RestaurantsList = () => {
-  const { data, isLoading: postsLoading } = api.restaurants.getAll.useQuery();
-
-  if (postsLoading) return <LoadingPage/>
-
-  if (!data) return <div>Something went wrong</div>
-
-  return (
-    <div className="mt-4">
-      {data.map((fullRestaurant) => (
-        <RestaurantView
-          {...fullRestaurant}
-          key={fullRestaurant.restaurant.id}
-        />
-      ))}
-    </div>
-  );
-}
-
-const Home: NextPage = () => {
-  const {isLoaded: userLoaded, isSignedIn}= useUser()
-
-  // Start fetching asap
-  api.restaurants.getAll.useQuery();
-
-  // Return empty div if both aren't loaded, since user tends to load faster
-  if (!userLoaded) return <div/>
-
-  return (
-    <PageLayout>
-      <div className="flex justify-end border-b p-4">
-        {!isSignedIn && <SignInButton />}
-        {!!isSignedIn && <SignOutButton />}
-      </div>
-      <div className="p-4">
-        <h1 className="text-3xl font-bold">Restaurants</h1>
-        <CreateRestaurantWizard />
-        <RestaurantsList />
-      </div>
-    </PageLayout>
-  );
-};
-
-export default Home;
