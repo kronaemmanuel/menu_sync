@@ -7,11 +7,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 const navigation = [
   { name: 'Product', href: '#' },
   { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
+  { name: 'Pricing', href: '#' },
 ]
 
-export default function Example() {
+export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
