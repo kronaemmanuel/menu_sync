@@ -3,6 +3,8 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
+import { SignOutButton, useUser } from '@clerk/nextjs'
+import Link from 'next/link'
 
 const navigation = [
   { name: 'Product', href: '#' },
@@ -12,6 +14,7 @@ const navigation = [
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const {isSignedIn}= useUser()
 
   return (
     <div className="bg-white">
@@ -53,12 +56,20 @@ export default function HomePage() {
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a
-              href="#"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Log in <span aria-hidden="true">&rarr;</span>
-            </a>
+            {isSignedIn ? (
+              <SignOutButton>
+                <button className="text-sm font-semibold leading-6 text-gray-900">
+                  Sign Out
+                </button>
+              </SignOutButton>
+            ) : (
+              <Link
+                href="/sign-in"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Log in <span aria-hidden="true">&rarr;</span>
+              </Link>
+            )}
           </div>
         </nav>
         <Dialog
@@ -102,12 +113,20 @@ export default function HomePage() {
                   ))}
                 </div>
                 <div className="py-6">
-                  <a
-                    href="#"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  >
-                    Log in
-                  </a>
+                  {isSignedIn ? (
+                    <SignOutButton>
+                      <button className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        Sign Out
+                      </button>
+                    </SignOutButton>
+                  ) : (
+                    <Link
+                      href="/sign-in"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Log in
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -145,12 +164,12 @@ export default function HomePage() {
               the future with MenuSync.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
+              <Link
+                href="/sign-up"
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Get started
-              </a>
+              </Link>
               <a
                 href="#"
                 className="text-sm font-semibold leading-6 text-gray-900"
